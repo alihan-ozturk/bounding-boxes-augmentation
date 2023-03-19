@@ -54,4 +54,3 @@ for imgName in os.listdir(imgPath):
     if key == cv.waitKey(0):
         cv.destroyAllWindows()
         break
-    cv.destroyAllWindows()
