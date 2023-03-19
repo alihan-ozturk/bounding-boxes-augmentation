@@ -40,19 +40,18 @@ for imgName in os.listdir(imgPath):
     transformed = transform(image=img, bboxes=anno)
     transformed_image = transformed['image']
     transformed_bboxes = transformed['bboxes']
-
+    transformed_image = cv.cvtColor(transformed_image, cv.COLOR_RGB2BGR)
     for x1, y1, x2, y2 in convert(anno, img.shape):
-        cv.rectangle(org, (x1, y1), (x2, y2), (255, 0, 0), 1)
+        cv.rectangle(org, (x1, y1), (x2, y2), (255, 0, 0), 2)
 
     if len(transformed_bboxes) > 0:
         for x1, y1, x2, y2 in convert(transformed_bboxes, transformed_image.shape):
-            cv.rectangle(transformed_image, (x1, y1), (x2, y2), (0, 255, 0), 1)
+            cv.rectangle(transformed_image, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
     else:
         print("no drones in sight")
 
     cv.imshow("image", org)
-    transformed_image = cv.cvtColor(transformed_image, cv.COLOR_RGB2BGR)
     cv.imshow("transformed", transformed_image)
     if key == cv.waitKey(0):
         cv.destroyAllWindows()
