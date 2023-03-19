@@ -6,7 +6,7 @@ from copy import copy
 
 transform = A.Compose([
     A.RandomCrop(width=300, height=300),
-    A.RandomBrightnessContrast(p=1),
+    # A.RandomBrightnessContrast(p=1),
 ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.3))
 
 imgPath = "C:/Users/Alihan/Desktop/imgs/"
@@ -27,7 +27,6 @@ for imgName in os.listdir(imgPath):
     labelPath = annoPath + imgName.split(".")[0] + ".txt"
     img = cv.imread(imgPath + imgName)
     org = copy(img)
-    img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
 
     anno = []
     with open(labelPath, "r") as labels:
@@ -35,21 +34,27 @@ for imgName in os.listdir(imgPath):
             anno.append((label[:-1] + " 0").split(" ")[1:])
     anno = np.array(anno, dtype=float)
 
+    img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
     transformed = transform(image=img, bboxes=anno)
     transformed_image = transformed['image']
     transformed_bboxes = transformed['bboxes']
 
     for x1, y1, x2, y2 in convert(anno, img.shape):
         cv.rectangle(org, (x1, y1), (x2, y2), (255, 0, 0), 1)
-    cv.imshow(imgName, org)
+    cv.imshow("image", org)
 
     if len(transformed_bboxes) > 0:
         for x1, y1, x2, y2 in convert(transformed_bboxes, transformed_image.shape):
             cv.rectangle(transformed_image, (x1, y1), (x2, y2), (0, 255, 0), 1)
-            transformed_image = cv.cvtColor(transformed_image, cv.COLOR_RGB2BGR)
-            cv.imshow("transformed", transformed_image)
+
+        transformed_image = cv.cvtColor(transformed_image, cv.COLOR_RGB2BGR)
+        cv.imshow("transformed", transformed_image)
+        c = True
     else:
         print(imgName, "no drones in sight")
+        if c:
+            cv.destroyWindow("transformed")
+            c = False
 
     if key == cv.waitKey(0):
         cv.destroyAllWindows()
