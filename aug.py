@@ -48,8 +48,6 @@ for imgName in os.listdir(imgPath):
         for x1, y1, x2, y2 in convert(transformed_bboxes, transformed_image.shape):
             cv.rectangle(transformed_image, (x1, y1), (x2, y2), (0, 255, 0), 1)
 
-
-
     else:
         print("no drones in sight")
 
