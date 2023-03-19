@@ -2,6 +2,7 @@ import os
 import numpy as np
 import cv2 as cv
 import albumentations as A
+from copy import copy
 
 transform = A.Compose([
     A.RandomCrop(width=300, height=300),
@@ -25,6 +26,7 @@ def convert(bboxParams, shape):
 for imgName in os.listdir(imgPath):
     labelPath = annoPath + imgName.split(".")[0] + ".txt"
     img = cv.imread(imgPath + imgName)
+    org = copy(img)
     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
 
     anno = []
@@ -38,9 +40,8 @@ for imgName in os.listdir(imgPath):
     transformed_bboxes = transformed['bboxes']
 
     for x1, y1, x2, y2 in convert(anno, img.shape):
-        cv.rectangle(img, (x1, y1), (x2, y2), (255, 0, 0), 1)
-    img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-    cv.imshow(imgName, img)
+        cv.rectangle(org, (x1, y1), (x2, y2), (255, 0, 0), 1)
+    cv.imshow(imgName, org)
 
     if len(transformed_bboxes) > 0:
         for x1, y1, x2, y2 in convert(transformed_bboxes, transformed_image.shape):
